@@ -29,6 +29,10 @@ const APIs = (() => {
         }).then((res) => {
             return res.json();
         })
+
+        // return fetch(`${URL}`).then((res) => {
+        //     return res.json();
+        // })
     };
 
     const getTodos = () => {
@@ -180,17 +184,31 @@ const ViewModel = ((Model, View) => {
             `
             todoParent.parentNode.innerHTML = template
 
-            //clicking on button second submits content to template and retursn input to content
+            // patch to api ?
 
             // APIs.updateTodo(id).then(res => {
             //     console.log("Res", res);
-            //     state.todos = [res, ...state.todos];//anti-pattern
-
+            //     return
             // });
             }
             
         })
     }
+    // updateStatus
+
+    // const updateStatus = () => {
+    //     View.todoListEl.addEventListener("click", (event) => {
+    //         const { id } = event.target
+    //         event.preventDefault();
+    //         if (event.target){
+    //             const todoParent = document.getElementById(id).parentNode
+    //             console.log(id)
+    //         todoParent.innerHTML =`
+    //         <li><span>${todo.content}</span></li>
+    //     `
+    //     }
+    //     })
+    // }
 
     const getTodos = ()=>{
         APIs.getTodos().then(res=>{
