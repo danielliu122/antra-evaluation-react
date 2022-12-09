@@ -195,6 +195,7 @@ const ViewModel = ((Model, View) => {
         })
     }
     // updateStatus
+    // return todo list where order finished status lower
 
     // const updateStatus = () => {
     //     View.todoListEl.addEventListener("click", (event) => {
