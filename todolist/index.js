@@ -184,7 +184,7 @@ const ViewModel = ((Model, View) => {
 
                 
                 let template =`
-                ${testTxt}<button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+                <span>${testTxt}</span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
             todoParent.innerHTML = template
 
