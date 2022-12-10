@@ -177,15 +177,20 @@ const ViewModel = ((Model, View) => {
                 console.log("firstClick2")
                 const todo = document.getElementById(id)
                 const todoParent = todo.parentNode
+                const contentText= todoParent.textContent.replace("UpdateDelete","")
                 const testTxt= document.getElementById("updateInput").value
+                console.log(todo, todoParent, event.target)
                 console.log("testTxt",testTxt)
+
+                
                 let template =`
-                <li><span>${testTxt}</span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button></li>
+                ${testTxt}<button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
-            todoParent.parentNode.innerHTML = template
+            todoParent.innerHTML = template
 
             // patch to api ?
-
+            console.log(state.todos)
+    
             // APIs.updateTodo(id).then(res => {
             //     console.log("Res", res);
             //     return
