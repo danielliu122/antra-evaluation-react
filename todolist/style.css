@@ -46,7 +46,6 @@ html {
   justify-content: space-between;
   border: 3px dotted grey;
   border-radius: 5px;
-  padding:5px
 }
 
 .todo__list span {

@@ -148,21 +148,14 @@ const ViewModel = ((Model, View) => {
     const updateTodo = () => {
         View.todoListEl.addEventListener("click", (event) => {
             event.preventDefault();
-            //const content = event.target[0].value;
-            //console.log("content", content)
-            //console.log(event.currentTarget, event.target)
             const { id } = event.target
             console.log(id)
 
             
             if (event.target.className === "btn--update") {
                 // clicking on button first turns content into input 
-                console.log("firstClick1")
                 const todo = document.getElementById(id)
                 const todoParent = todo.parentNode
-
-                var old = todoParent.innerHTML
-                console.log("old inner" , old)
 
 
                 const contentText= todoParent.textContent.replace("UpdateDelete","")
@@ -173,14 +166,10 @@ const ViewModel = ((Model, View) => {
             }
             else if (event.target.className === "btn--update2") {
                 // clicking on button second update 
-
-                console.log("firstClick2")
                 const todo = document.getElementById(id)
                 const todoParent = todo.parentNode
-                const contentText= todoParent.textContent.replace("UpdateDelete","")
                 const testTxt= document.getElementById("updateInput").value
-                console.log(todo, todoParent, event.target)
-                console.log("testTxt",testTxt)
+
 
                 
                 let template =`
@@ -189,32 +178,38 @@ const ViewModel = ((Model, View) => {
             todoParent.innerHTML = template
 
             // patch to api ?
-            console.log(state.todos)
-    
-            // APIs.updateTodo(id).then(res => {
-            //     console.log("Res", res);
-            //     return
-            // });
-            }
+            console.log(state.todos, todo, todoParent, )
+            APIs.updateTodo(id).then(res => {
+                console.log("Res", res);
+                state.todos.map((item) => {
+                    console.log(item, item.id, todo, todo.id)
+                    if (item.id == todo.id) {
+                        console.log("found same id item, updating...") 
+                        item = {...item, content: todo.textContent};
+                    }
+                });
+                console.log(state.todos)
+            });
             
+            }
         })
     }
     // updateStatus
     // return todo list where order finished status lower
 
-    // const updateStatus = () => {
-    //     View.todoListEl.addEventListener("click", (event) => {
-    //         const { id } = event.target
-    //         event.preventDefault();
-    //         if (event.target){
-    //             const todoParent = document.getElementById(id).parentNode
-    //             console.log(id)
-    //         todoParent.innerHTML =`
-    //         <li><span>${todo.content}</span></li>
-    //     `
-    //     }
-    //     })
-    // }
+    const updateStatus = () => {
+        View.todoListEl.addEventListener("click", (event) => {
+            event.preventDefault();
+            if (event.target.className !== "btn--update"){
+                const todo = event.target;
+                console.log("updatestatus todo" ,todo);
+                todo.innerHTML= `
+            <span><p style = "text-decoration:line-through"></p> ${todo.textContent}</span>
+            `
+            }
+        })
+
+    }
 
     const getTodos = ()=>{
         APIs.getTodos().then(res=>{
@@ -226,6 +221,7 @@ const ViewModel = ((Model, View) => {
         addTodo();
         deleteTodo();
         updateTodo();
+        updateStatus();
         getTodos();
         state.subscribe(() => {
             View.renderTodolist(state.todos)
