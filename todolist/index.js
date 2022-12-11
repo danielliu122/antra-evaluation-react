@@ -220,21 +220,22 @@ const ViewModel = ((Model, View) => {
     const updateStatus = () => {
         View.todoListEl.addEventListener("click", (event) => {
             event.preventDefault();
-            if (event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
+            if (event.target.className !== "resolvedStatus" && event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
                 console.log("first click updatestatus")
                 const todo = event.target;
                 const todoParent = event.target.parentNode;
+
                 console.log("updatestatus todo" ,todo);
                 todoParent.innerHTML= `
-            <span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus" id= "resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+            <span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
             }
-            else if (event.target.className === "resolvedStatus"){
+            else if (event.target.className === "resolvedStatus" && event.target.className !== "btn--update" && event.target.className !== "btn--delete"){
                 console.log("second click updatestatus")
                 const todo = event.target
                 const todoParent = todo.parentNode.parentNode
                 todoParent.innerHTML= `
-                <span>${todo.textContent}</p></span><button type= "button" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+                <span> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
                 `
             }
         })
