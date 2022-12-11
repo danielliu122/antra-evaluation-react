@@ -35,6 +35,19 @@ const APIs = (() => {
         // })
     };
 
+    // update status
+    const updateStatus = (id) => {
+        return fetch(`${URL}/${id}`, {
+            method: "PATCH"
+        }).then((res) => {
+            return res.json();
+        })
+
+        // return fetch(`${URL}`).then((res) => {
+        //     return res.json();
+        // })
+    };
+
     const getTodos = () => {
         return fetch(`${URL}`).then((res) => {
             return res.json();
@@ -45,6 +58,7 @@ const APIs = (() => {
         getTodos,
         deleteTodo,
         updateTodo,
+        updateStatus,
         addTodo
     }
 })()
@@ -96,6 +110,7 @@ const View = (() => {
     const renderTodolist = (todos) => {
         let template = "";
         todos.sort((a,b)=>b.id-a.id).forEach((todo) => {
+            console.log(todo)
             template += `
                 <li><span>${todo.content}</span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button></li>
             `
@@ -158,7 +173,7 @@ const ViewModel = ((Model, View) => {
                 const todoParent = todo.parentNode
 
 
-                const contentText= todoParent.textContent.replace("UpdateDelete","")
+                const contentText= todoParent.textContent.replace("UpdateDelete","").trim("")
                 let template =`
                 <input type= "text" id= "updateInput" value = ${contentText}></input><button type= "button" class="btn--update2" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
@@ -178,20 +193,25 @@ const ViewModel = ((Model, View) => {
             todoParent.innerHTML = template
 
             // patch to api ?
-            console.log(state.todos, todo, todoParent, )
-            APIs.updateTodo(id).then(res => {
-                console.log("Res", res);
-                state.todos.map((item) => {
-                    console.log(item, item.id, todo, todo.id)
-                    if (item.id == todo.id) {
-                        console.log("found same id item, updating...") 
-                        item = {...item, content: todo.textContent};
-                    }
-                });
-                console.log(state.todos)
-            });
-            
+            let contentText = todoParent.textContent.replace("UpdateDelete","").trim("")
+            console.log(state.todos, todo, todoParent, todoParent.textContent.replace("UpdateDelete","").trim("") )
+            // APIs.updateTodo(id).then(res => {
+            //     console.log("Res", res);
+                
+            //     state.todos= state.todos.map((item) => {
+            //         console.log(item, item.id, todo, todo.id, todoParent)
+            //         if (item.id == todo.id) {
+            //             console.log("found same id item, updating...") 
+            //             item = {...item, content: contentText};
+            //             console.log(item)
+                         
+            //         }
+            //     });
+            //     console.log(state.todos)
+            //    //return state.todos
+            // });
             }
+            
         })
     }
     // updateStatus
@@ -200,12 +220,22 @@ const ViewModel = ((Model, View) => {
     const updateStatus = () => {
         View.todoListEl.addEventListener("click", (event) => {
             event.preventDefault();
-            if (event.target.className !== "btn--update"){
+            if (event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
+                console.log("first click updatestatus")
                 const todo = event.target;
+                const todoParent = event.target.parentNode;
                 console.log("updatestatus todo" ,todo);
-                todo.innerHTML= `
-            <span><p style = "text-decoration:line-through"></p> ${todo.textContent}</span>
+                todoParent.innerHTML= `
+            <span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus" id= "resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
+            }
+            else if (event.target.className === "resolvedStatus"){
+                console.log("second click updatestatus")
+                const todo = event.target
+                const todoParent = todo.parentNode.parentNode
+                todoParent.innerHTML= `
+                <span>${todo.textContent}</p></span><button type= "button" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+                `
             }
         })
 
