@@ -169,7 +169,7 @@ const ViewModel = ((Model, View) => {
             
             if (event.target.className === "btn--update") {
                 // clicking on button first turns content into input 
-                const todo = document.getElementById(id)
+                const todo = event.target
                 const todoParent = todo.parentNode
 
 
@@ -181,7 +181,7 @@ const ViewModel = ((Model, View) => {
             }
             else if (event.target.className === "btn--update2") {
                 // clicking on button second update 
-                const todo = document.getElementById(id)
+                const todo = event.target
                 const todoParent = todo.parentNode
                 const testTxt= document.getElementById("updateInput").value
 
@@ -218,7 +218,7 @@ const ViewModel = ((Model, View) => {
     // return todo list where order finished status lower
 
     const updateStatus = () => {
-        View.todoListEl.addEventListener("click", (event) => {
+        View.todoListEl.addEventListener("dblclick", (event) => {
             event.preventDefault();
             if (event.target.className !== "resolvedStatus" && event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
                 console.log("first click updatestatus")
