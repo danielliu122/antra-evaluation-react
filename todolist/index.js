@@ -23,9 +23,9 @@ const APIs = (() => {
     };
 
     // update Todo
-    const updateTodo = (todo) => {
-        console.log(todo)
-        return fetch(URL, {
+    const updateTodo = (todo,id) => {
+        console.log(todo, id)
+        return fetch(`${URL}/${id}`, {
             method: "PUT",
             body: JSON.stringify(todo),
             headers: {
@@ -198,32 +198,12 @@ const ViewModel = ((Model, View) => {
 
                 // patch to api ?
                 let contentText = todoParent.textContent.replace("UpdateDelete","").trim("")
-                console.log(state.todos, todo, todoParent, todoParent.textContent.replace("UpdateDelete","").trim("") )
-                // APIs.updateTodo(todo).then(res => {
-                //     console.log("Res", res);
-                    
-                //     state.todos= state.todos.map((item) => {
-                //         console.log(item, item.id, todo, todo.id, todoParent)
-                //         if (item.id == todo.id) {
-                //             console.log("found same id item, updating...", item, {...item, content: contentText}) 
-                //             return item = {...item, content: contentText};
-                            
-                //         }
-                //     });
-                //     console.log(state.todos)
-                // });
-
-            state.todos= state.todos.map((item) => {
-                console.log(item, item.id, todo, todo.id, todoParent)
-                if (item.id == todo.id) {
-                    console.log("found same id item, updating...", item, {...item, content: contentText}) 
-                    return item = {...item, content: contentText};
-                     
+                console.log(state.todos, todo, todoParent, contentText )
+                let contentText2 = {
+                    content: todoParent.textContent.replace("UpdateDelete","").trim("") 
                 }
-            });
-            APIs.updateTodo(todo).then(res => {
-                console.log(res)
-            });
+                APIs.updateTodo(contentText2, id)
+
 
             }
         })
