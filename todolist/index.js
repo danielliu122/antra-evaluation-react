@@ -23,22 +23,28 @@ const APIs = (() => {
     };
 
     // update Todo
-    const updateTodo = (id) => {
-        return fetch(`${URL}/${id}`, {
-            method: "PATCH"
+    const updateTodo = (todo) => {
+        console.log(todo)
+        return fetch(URL, {
+            method: "PUT",
+            body: JSON.stringify(todo),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }).then((res) => {
+            console.log(res)
             return res.json();
         })
-
-        // return fetch(`${URL}`).then((res) => {
-        //     return res.json();
-        // })
     };
 
     // update status
-    const updateStatus = (id) => {
-        return fetch(`${URL}/${id}`, {
-            method: "PATCH"
+    const updateStatus = (todo) => {
+        return fetch(`${URL}/${todo}`, {
+            method: "PUT",
+            body: JSON.stringify(todo),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }).then((res) => {
             return res.json();
         })
@@ -145,7 +151,6 @@ const ViewModel = ((Model, View) => {
 
     const deleteTodo = () => {
         View.todoListEl.addEventListener("click", (event) => {
-            event.preventDefault();
             console.log(event.currentTarget, event.target)
             const { id } = event.target
             if (event.target.className === "btn--delete") {
@@ -162,7 +167,6 @@ const ViewModel = ((Model, View) => {
     // update Todo
     const updateTodo = () => {
         View.todoListEl.addEventListener("click", (event) => {
-            event.preventDefault();
             const { id } = event.target
             console.log(id)
 
@@ -190,28 +194,38 @@ const ViewModel = ((Model, View) => {
                 let template =`
                 <span>${testTxt}</span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
-            todoParent.innerHTML = template
+                 todoParent.innerHTML = template
 
-            // patch to api ?
-            let contentText = todoParent.textContent.replace("UpdateDelete","").trim("")
-            console.log(state.todos, todo, todoParent, todoParent.textContent.replace("UpdateDelete","").trim("") )
-            // APIs.updateTodo(id).then(res => {
-            //     console.log("Res", res);
-                
-            //     state.todos= state.todos.map((item) => {
-            //         console.log(item, item.id, todo, todo.id, todoParent)
-            //         if (item.id == todo.id) {
-            //             console.log("found same id item, updating...") 
-            //             item = {...item, content: contentText};
-            //             console.log(item)
-                         
-            //         }
-            //     });
-            //     console.log(state.todos)
-            //    //return state.todos
-            // });
+                // patch to api ?
+                let contentText = todoParent.textContent.replace("UpdateDelete","").trim("")
+                console.log(state.todos, todo, todoParent, todoParent.textContent.replace("UpdateDelete","").trim("") )
+                // APIs.updateTodo(todo).then(res => {
+                //     console.log("Res", res);
+                    
+                //     state.todos= state.todos.map((item) => {
+                //         console.log(item, item.id, todo, todo.id, todoParent)
+                //         if (item.id == todo.id) {
+                //             console.log("found same id item, updating...", item, {...item, content: contentText}) 
+                //             return item = {...item, content: contentText};
+                            
+                //         }
+                //     });
+                //     console.log(state.todos)
+                // });
+
+            state.todos= state.todos.map((item) => {
+                console.log(item, item.id, todo, todo.id, todoParent)
+                if (item.id == todo.id) {
+                    console.log("found same id item, updating...", item, {...item, content: contentText}) 
+                    return item = {...item, content: contentText};
+                     
+                }
+            });
+            APIs.updateTodo(todo).then(res => {
+                console.log(res)
+            });
+
             }
-            
         })
     }
     // updateStatus
@@ -220,6 +234,7 @@ const ViewModel = ((Model, View) => {
     const updateStatus = () => {
         View.todoListEl.addEventListener("dblclick", (event) => {
             event.preventDefault();
+            const todo = event.target
             if (event.target.className !== "resolvedStatus" && event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
                 console.log("first click updatestatus")
                 const todo = event.target;
@@ -238,6 +253,20 @@ const ViewModel = ((Model, View) => {
                 <span> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
                 `
             }
+            // APIs.updateTodo(todo).then(res => {
+            //     console.log("Res", res);
+                
+            //     state.todos= state.todos.map((item) => {
+            //         console.log(item, item.id, todo, todo.id)
+            //         if (item.id == todo.id) {
+            //             console.log("found same id item, updating...", item) 
+            //             return item = {...item, content: contentText};
+                         
+            //         }
+            //     });
+            //     console.log(state.todos)
+            // });
+        
         })
 
     }
