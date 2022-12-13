@@ -55,3 +55,8 @@ html {
   align-items: center;
   height: 30px;
 }
+
+.resolvedStatus {
+  text-decoration:line-through; 
+  color: grey;
+}

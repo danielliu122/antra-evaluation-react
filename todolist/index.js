@@ -32,27 +32,26 @@ const APIs = (() => {
                 'Content-Type': 'application/json'
             }
         }).then((res) => {
-            console.log(res)
+            console.log(res, JSON.stringify(todo))
             return res.json();
         })
     };
 
     // update status
-    const updateStatus = (todo) => {
-        return fetch(`${URL}/${todo}`, {
+    const updateStatus = (todo,id) => {
+        console.log(todo, id)
+        return fetch(`${URL}/${id}`, {
             method: "PUT",
             body: JSON.stringify(todo),
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then((res) => {
+            console.log(res, JSON.stringify(todo))
             return res.json();
         })
-
-        // return fetch(`${URL}`).then((res) => {
-        //     return res.json();
-        // })
     };
+
 
     const getTodos = () => {
         return fetch(`${URL}`).then((res) => {
@@ -116,10 +115,17 @@ const View = (() => {
     const renderTodolist = (todos) => {
         let template = "";
         todos.sort((a,b)=>b.id-a.id).forEach((todo) => {
-            console.log(todo)
+            console.log(todo, todos)
+            if (todo.style === "pending"){
+            template += `
+                <li><span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+            `
+            }
+            else {
             template += `
                 <li><span>${todo.content}</span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button></li>
             `
+            }
         })
         todoListEl.innerHTML = template;
     }
@@ -198,9 +204,8 @@ const ViewModel = ((Model, View) => {
 
                 // patch to api ?
                 let contentText = todoParent.textContent.replace("UpdateDelete","").trim("")
-                console.log(state.todos, todo, todoParent, contentText )
                 let contentText2 = {
-                    content: todoParent.textContent.replace("UpdateDelete","").trim("") 
+                    content: contentText
                 }
                 APIs.updateTodo(contentText2, id)
 
@@ -213,17 +218,28 @@ const ViewModel = ((Model, View) => {
 
     const updateStatus = () => {
         View.todoListEl.addEventListener("dblclick", (event) => {
-            event.preventDefault();
-            const todo = event.target
+            const { id } = event.target
+            console.log(id)
+            
             if (event.target.className !== "resolvedStatus" && event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
                 console.log("first click updatestatus")
                 const todo = event.target;
                 const todoParent = event.target.parentNode;
-
-                console.log("updatestatus todo" ,todo);
                 todoParent.innerHTML= `
             <span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
+            // patch to api ?
+            let contentText = todo.textContent.replace("UpdateDelete","").trim("")
+            let contentText2 = {
+                content: contentText,
+                status: "pending"
+            }
+
+            APIs.updateStatus(contentText2, id).then(res => {
+                console.log("Res", res);
+            })
+            
+
             }
             else if (event.target.className === "resolvedStatus" && event.target.className !== "btn--update" && event.target.className !== "btn--delete"){
                 console.log("second click updatestatus")
@@ -231,22 +247,18 @@ const ViewModel = ((Model, View) => {
                 const todoParent = todo.parentNode.parentNode
                 todoParent.innerHTML= `
                 <span> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
-                `
-            }
-            // APIs.updateTodo(todo).then(res => {
-            //     console.log("Res", res);
                 
-            //     state.todos= state.todos.map((item) => {
-            //         console.log(item, item.id, todo, todo.id)
-            //         if (item.id == todo.id) {
-            //             console.log("found same id item, updating...", item) 
-            //             return item = {...item, content: contentText};
-                         
-            //         }
-            //     });
-            //     console.log(state.todos)
-            // });
-        
+                `
+                // patch to api ?
+                let contentText = todo.textContent.replace("UpdateDelete","").trim("")
+                let contentText2 = {
+                    content: contentText,
+                    status: "resolved"
+                }
+                APIs.updateStatus(contentText2, id)
+
+            }
+            
         })
 
     }
