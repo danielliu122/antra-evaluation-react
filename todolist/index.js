@@ -113,20 +113,21 @@ const View = (() => {
     const formEl = document.querySelector(".todo__form");
     const todoListEl = document.querySelector(".todo__list");
     const renderTodolist = (todos) => {
-        let template = "";
+        let template, template1, template2 = "";
         todos.sort((a,b)=>b.id-a.id).forEach((todo) => {
             console.log(todo, todos)
-            if (todo.style === "pending"){
-            template += `
-                <li><span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+            if (todo.status === "pending"){
+            template1 += `
+                <li><span class="pending" id= "${todo.id}"<p style = "text-decoration:line-through; color: grey" class="resolvedStatus"> ${todo.content}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
             }
             else {
-            template += `
-                <li><span>${todo.content}</span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button></li>
+            template2 += `
+                <li><span id="${todo.id}">${todo.content}  </span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button></li>
             `
             }
         })
+        template= template2+template1
         todoListEl.innerHTML = template;
     }
     return {
@@ -219,15 +220,16 @@ const ViewModel = ((Model, View) => {
     const updateStatus = () => {
         View.todoListEl.addEventListener("dblclick", (event) => {
             const { id } = event.target
-            console.log(id)
+            console.log(event.target)
             
             if (event.target.className !== "resolvedStatus" && event.target.className !== "btn--update"&& event.target.className !== "btn--delete"){
                 console.log("first click updatestatus")
                 const todo = event.target;
                 const todoParent = event.target.parentNode;
                 todoParent.innerHTML= `
-            <span><p style = "text-decoration:line-through; color: grey" class="resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
+            <span  id="${todo.id}"><p style = "text-decoration:line-through; color: grey"  id="${todo.id}" class="resolvedStatus"> ${todo.textContent}</p></span><button type= "button" class="btn--update" id="${todo.id}">Update</button><button type= "button" class="btn--delete" id="${todo.id}">Delete</button>
             `
+                console.log(todoParent.id, todo.id)
             // patch to api ?
             let contentText = todo.textContent.replace("UpdateDelete","").trim("")
             let contentText2 = {

@@ -56,7 +56,7 @@ html {
   height: 30px;
 }
 
-.resolvedStatus {
+.pending {
   text-decoration:line-through; 
   color: grey;
 }
